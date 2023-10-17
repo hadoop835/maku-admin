@@ -67,15 +67,28 @@ a:hover {
   }
   .layout-main {
     padding: 0 !important;
-    overflow: hidden;
+    overflow: hidden; 
     width: 100%;
     background-color: var(--theme-main-bg-color);
     .layout-card{
-      min-height: calc(100vh - 70px - var(--theme-header-height));
+      overflow: hidden; 
+      height: calc(100vh - 70px - var(--theme-header-height));
+      .el-card{
+        height: calc(100vh - 70px - var(--theme-header-height));
+        .el-container{
+          height: calc(100vh - 70px - var(--theme-header-height));
+        }
+        .el-card__body{
+          flex: 1;
+        }
+      }
     }
+     
+      
   }
   .layout-scrollbar {
     //width: 100%;
     padding: 15px;
   }
+  .el-container {height: 100%;}
 }

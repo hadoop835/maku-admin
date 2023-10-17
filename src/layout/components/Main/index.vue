@@ -26,7 +26,7 @@ const tabsStore = useTabsStore()
 const theme = computed(() => appStore.theme)
 const layoutMainHeight = computed(() => {
 	if (!theme.value.isTabsView) {
-		return 'min-height: calc(100vh - var(--theme-header-height) - 30px) !important'
+		return 'height: calc(100vh - var(--theme-header-height) - 30px) !important'
 	} else {
 		return ''
 	}

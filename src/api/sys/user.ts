@@ -1,17 +1,17 @@
-import service from '@/utils/request'
+import http from '@/utils/request'
 import cache from '@/utils/cache'
 import constant from '@/utils/constant'
 
-export const useUserInfoApi = () => {
-	return service.get('/sys/user/info')
+export const getUserInfoInfo = () => {
+	return http.get('v1/user/getUserLoginInfo')
 }
 
 export const updatePasswordApi = (data: any) => {
-	return service.put('/sys/user/password', data)
+	return http.put('/sys/user/password', data)
 }
 
 export const useUserApi = (id: number) => {
-	return service.get('/sys/user/' + id)
+	return http.get('/sys/user/' + id)
 }
 
 export const useUserExportApi = () => {
@@ -20,8 +20,8 @@ export const useUserExportApi = () => {
 
 export const useUserSubmitApi = (dataForm: any) => {
 	if (dataForm.id) {
-		return service.put('/sys/user', dataForm)
+		return http.put('/sys/user', dataForm)
 	} else {
-		return service.post('/sys/user', dataForm)
+		return http.post('/sys/user', dataForm)
 	}
 }

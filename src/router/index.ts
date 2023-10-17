@@ -155,19 +155,19 @@ router.beforeEach(async (to, from, next) => {
 
 	const appStore = useAppStore()
 	const userStore = useUserStore()
-	const routerStore = useRouterStore()
-
+	const routerStore = useRouterStore() 
 	// token存在的情况
 	if (userStore.token) {
 		if (to.path === '/login') {
 			next('/home')
-		} else {
+		} else { 
 			// 用户信息不存在，则重新拉取
-			if (!userStore.user.id) {
+			console.log(userStore.user)
+			if (!userStore.user.userName) {
 				try {
-					await userStore.getUserInfoAction()
-					await userStore.getAuthorityListAction()
-					await appStore.getDictListAction()
+					await userStore.getUserInfoInfo()
+					//await userStore.getAuthorityListAction()
+					//await appStore.getDictListAction()
 				} catch (error) {
 					// 请求异常，则跳转到登录页
 					userStore?.setToken('')
@@ -177,10 +177,9 @@ router.beforeEach(async (to, from, next) => {
 
 				// 动态菜单+常量菜单
 				const menuRoutes = await routerStore.getMenuRoutes()
-
+ 
 				// 获取扁平化路由，将多级路由转换成一级路由
 				const keepAliveRoutes = getKeepAliveRoutes(menuRoutes, [])
-
 				// 添加菜单路由
 				asyncRoutes.children?.push(...keepAliveRoutes)
 				router.addRoute(asyncRoutes)
@@ -247,7 +246,7 @@ const getDynamicComponent = (path: string): any => {
 export const generateRoutes = (menuList: any): RouteRecordRaw[] => {
 	const routerList: RouteRecordRaw[] = []
 
-	menuList.forEach((menu: any) => {
+	menuList.forEach((menu: any) => { 
 		let component
 		let path
 		if (menu.children && menu.children.length > 0) {
@@ -259,8 +258,8 @@ export const generateRoutes = (menuList: any): RouteRecordRaw[] => {
 				component = () => import('@/layout/components/Router/Iframe.vue')
 				path = '/iframe/' + menu.id
 			} else {
-				component = getDynamicComponent(menu.url)
-				path = '/' + menu.url
+				component = getDynamicComponent(menu.path)
+				path = '/' + menu.path
 			}
 		}
 		const route: RouteRecordRaw = {
@@ -269,12 +268,12 @@ export const generateRoutes = (menuList: any): RouteRecordRaw[] => {
 			component: component,
 			children: [],
 			meta: {
-				title: menu.name,
+				title: menu.title,
 				icon: menu.icon,
 				id: '' + menu.id,
-				url: menu.url,
+				url: menu.path,
 				cache: true,
-				newOpen: menu.openStyle === 1,
+				newOpen: true,
 				breadcrumb: []
 			}
 		}

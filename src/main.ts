@@ -21,7 +21,9 @@ import FastTableColumn from '@/components/fast-table-column'
 import FastRadioGroup from '@/components/fast-radio-group'
 import FastSelect from '@/components/fast-select'
 import FastUser from '@/components/fast-user'
+import MTable from '@/components/m-table'
 import SvgIcon from '@/components/svg-icon'
+import common from './common'
 
 VXETable.setup({
 	zIndex: 3000,
@@ -47,4 +49,6 @@ app.use(FastUser)
 app.use(SvgIcon)
 app.use(ElementPlus)
 app.use(VXETable)
+app.use(MTable)
+app.use(common);
 app.mount('#app')

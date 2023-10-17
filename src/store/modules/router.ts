@@ -11,9 +11,8 @@ export const useRouterStore = defineStore('routerStore', {
 	}),
 	actions: {
 		async getMenuRoutes() {
-			const { data } = await useMenuNavApi()
-			const routes = generateRoutes(data)
-
+			const { data } = await useMenuNavApi({})
+			const routes = generateRoutes(data.menu)
 			this.menuRoutes.push(...routes)
 
 			// 常量菜单

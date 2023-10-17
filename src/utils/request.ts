@@ -67,69 +67,67 @@ http.interceptors.response.use(
 		if (response.status !== 200) {
 			return Promise.reject(new Error(response.statusText || 'Error'))
 		}
-
 		const res = response.data
 		if (Object.prototype.toString.call(res) === '[object Blob]') {
 			return response
 		}
 
 		// 响应成功
-		if (res.code === 0) {
+		if (res.success) {
 			return res
-		}
-
-		// refreshToken失效，跳转到登录页
-		if (res.code === 400) {
-			return handleAuthorized()
-		}
-
-		// 没有权限，如：未登录、token过期
-		if (res.code === 401) {
-			const config = response.config
-			if (!isRefreshToken) {
-				isRefreshToken = true
-
-				// 不存在 refreshToken，重新登录
-				const refreshToken = cache.getRefreshToken()
-				if (!refreshToken) {
-					return handleAuthorized()
-				}
-
-				try {
-					const { data } = await getRefreshToken(refreshToken)
-					// 设置新 token
-					userStore.setToken(data.access_token)
-					config.headers!.Authorization = data.access_token
-					requests.forEach((cb: any) => {
-						cb()
-					})
-					requests = []
-					return http(config)
-				} catch (e) {
-					// 刷新失败
-					requests.forEach((cb: any) => {
-						cb()
-					})
-					return handleAuthorized()
-				} finally {
-					requests = []
-					isRefreshToken = false
-				}
-			} else {
-				// 多个请求的情况
-				return new Promise(resolve => {
-					requests.push(() => {
-						config.headers!.Authorization = userStore.token
-						resolve(http(config))
-					})
-				})
+		}else{
+			if (res.code === 400) {
+				return handleAuthorized()
 			}
-		}
-
+	
+			// 没有权限，如：未登录、token过期
+			if (res.code === 401) {
+				const config = response.config
+				if (!isRefreshToken) {
+					isRefreshToken = true
+	
+					// 不存在 refreshToken，重新登录
+					const refreshToken = cache.getRefreshToken()
+					if (!refreshToken) {
+						return handleAuthorized()
+					}
+	
+					try {
+						const { data } = await getRefreshToken(refreshToken)
+						// 设置新 token
+						userStore.setToken(data.access_token)
+						config.headers!.Authorization = data.access_token
+						requests.forEach((cb: any) => {
+							cb()
+						})
+						requests = []
+						return http(config)
+					} catch (e) {
+						// 刷新失败
+						requests.forEach((cb: any) => {
+							cb()
+						})
+						return handleAuthorized()
+					} finally {
+						requests = []
+						isRefreshToken = false
+					}
+				} else {
+					// 多个请求的情况
+					return new Promise(resolve => {
+						requests.push(() => {
+							config.headers!.Authorization = userStore.token
+							resolve(http(config))
+						})
+					})
+				}
+			}
+			
+		// refreshToken失效，跳转到登录页
 		// 错误提示
-		ElMessage.error(res.msg)
-
-		return Promise.reject(new Error(res.msg || 'Error'))
+		ElMessage.error(res.errMessage)
+		return Promise.reject(new Error(res.errMessage || 'Error'))
+		}
 	},
 	error => {
 		ElMessage.error(error.message)

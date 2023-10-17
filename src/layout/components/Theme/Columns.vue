@@ -5,13 +5,7 @@
 				<el-avatar src="./favicon.ico"></el-avatar>
 			</div>
 			<el-scrollbar>
-				<div class="columns-menu">
-					<router-link to="/home">
-						<div class="columns-menu-item" :class="{ active: menuPath === '/home' }">
-							<svg-icon icon="icon-home"></svg-icon>
-							<span class="title">首页</span>
-						</div>
-					</router-link>
+				<div class="columns-menu ">
 					<div
 						v-for="menu in routerStore.menuRoutes"
 						:key="menu.path"
@@ -19,8 +13,13 @@
 						:class="{ active: menuPath === menu.path }"
 						@click="handleMenu(menu)"
 					>
-						<svg-icon :icon="menu.meta?.icon"></svg-icon>
+					   <div class="columns-menu-item-box-top"><div></div></div>
+					   <div class="columns-menu-item-box"><div></div></div>
+					   <div class="icon">
+					   <el-icon><component :is="menu.meta?.icon || 'el-icon-menu'" /></el-icon>
+					   </div>
 						<span class="title">{{ menu.meta?.title }}</span>
+						<div class="columns-menu-item-box-bottom"><div></div></div>
 					</div>
 				</div>
 			</el-scrollbar>
@@ -62,6 +61,7 @@ import Tabs from '@/layout/components/Tabs/index.vue'
 import MenuItem from '@/layout/components/Menu/MenuItem.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouteRecordRaw, useRoute, useRouter } from 'vue-router'
+import { color } from 'echarts'
 
 const routerStore = useRouterStore()
 const appStore = useAppStore()
@@ -167,12 +167,22 @@ const layoutHeaderHeight = computed(() => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		height: 70px;
+		justify-content: center; 
 		cursor: pointer;
 		transition: all 0.3s ease;
+		height: 80px;
+        width: 88px;
+        position: relative;
+        font-weight: 400;
 		&:hover {
-			background-color: var(--el-color-primary);
+			.columns-menu-item-box{
+				div {
+            background-color: #ffffff;
+            opacity: 0.1;
+			}
+
+          }
+			//background-color: #fff;
 		}
 		::v-deep(.svg-icon) {
 			align-items: center;
@@ -182,20 +192,106 @@ const layoutHeaderHeight = computed(() => {
 				color: var(--theme-menu-text-color) !important;
 			}
 		}
-		.title {
-			margin-top: 6px;
-			font-size: 12px;
-			color: var(--theme-menu-text-color);
+		.columns-menu-item-box-top {
+			top: 0;
+			position: absolute;
+			right: 0;
+			height: 8px;
+			width: 8px; 
+			div { 
+				height: 8px;
+			    width: 8px; 
+				border-bottom-right-radius: 8px;
+			}
 		}
+		.columns-menu-item-box-bottom{
+            bottom: 0;
+			position: absolute;
+			right: 0;
+			height: 8px;
+			width: 8px; 
+			div{
+				border-top-right-radius: 8px;
+				height: 8px;
+			    width: 8px; 
+			}
+		}
+		.columns-menu-item-box {
+          position: absolute;
+          width: 80px;
+          height: 64.1px;
+          top: 8px;
+          left: 8px;
+          border-top-left-radius: 8px;
+          border-bottom-left-radius: 8px;
+          div {
+            width: 72px;
+            height: 64px;
+            border-radius: 8px;
+          }
+        }
+
+		
+		.icon {
+          position: absolute;
+          top: 16px;
+          color: #fff;
+          padding: 0 32px;
+          font-size: 24px;
+          height: 24px;
+          line-height: 24px;
+        }
+
+        .title {
+          padding: 0 16px;
+          position: absolute;
+          width: 100%;
+          top: 44px;
+          color: #fff;
+          font-size: 14px;
+          opacity: 0.6;
+          text-align: center;
+          height: 20px;
+          line-height: 20px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          -o-text-overflow: ellipsis;
+        }
 	}
 	.active {
-		background-color: var(--el-color-primary);
+		//background-color: var(--el-color-primary);
+		//background-color: #fff;
+		.columns-menu-item-box-top {
+			background-color: #fff;
+			div {background-color: var(--el-color-primary);;}
+		}
+		.columns-menu-item-box-bottom{
+			background-color: #fff;
+			div {
+				background-color: var(--el-color-primary);
+			}
+		}
+		.columns-menu-item-box{
+			background-color: #fff;
+			
+		}
+		.title {
+          color: var(--el-color-primary);
+          ;
+          opacity: 1;
+        }
+		.icon{
+			color: var(--el-color-primary);
+        }
+
 	}
 }
 
 .layout-sidebar {
 	&.aside-expend {
-		width: 75px !important;
+		width: 88px !important;
+		background-color: var(--el-color-primary);
 	}
 	::v-deep(.el-menu-item) {
 		padding-left: 6px !important;
@@ -262,4 +358,5 @@ const layoutHeaderHeight = computed(() => {
 		}
 	}
 }
+  
 </style>

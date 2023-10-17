@@ -17,9 +17,9 @@ export const useAccountLoginApi = (data: any) => {
 }
 
 export const useMobileLoginApi = (data: any) => {
-	return service.post('/sys/auth/mobile', data)
+	return http.post('/sys/auth/mobile', data)
 }
 
 export const useLogoutApi = () => {
-	return service.post('/sys/auth/logout')
+	return http.post('/sys/auth/logout')
 }

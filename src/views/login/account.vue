@@ -25,6 +25,7 @@ import { useCaptchaApi, useCaptchaEnabledApi } from '@/api/auth'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import constant from '@/utils/constant'
+import crypto from '@/utils/crypto'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -77,7 +78,7 @@ const onLogin = () => {
 		if (!valid) {
 			return false
 		}
-
+		loginForm.password=crypto.MD5(loginForm.password)
 		// 用户登录
 		userStore
 			.accountLoginAction(loginForm)

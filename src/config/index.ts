@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
 	CORE_VER: appPackage.version,
 
 	//接口地址
-	API_URL: import.meta.env.VITE_NODE_ENV === 'development' && import.meta.env.VITE_APP_PROXY === 'true' ? "/api" : import.meta.env.VITE_APP_API_BASEURL,
+	API_URL: import.meta.env.DEV === true ? "/api" : import.meta.env.VITE_APP_API_BASEURL,
 	//请求超时
 	TIMEOUT: 10000,
 

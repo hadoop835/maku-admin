@@ -29,7 +29,7 @@
     "vue": "3.2.47",
     "vue-i18n": "9.1.9",
     "vue-router": "4.1.5",
-    "vxe-table": "^4.3.10",
+    "vxe-table": "^4.5.12",
     "xe-utils": "^3.5.7"
   },
   "devDependencies": {
