@@ -1,43 +1,53 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, {  InternalAxiosRequestConfig, AxiosResponse, AxiosError  } from 'axios'
 import qs from 'qs'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import cache from '@/utils/cache'
 import { ElMessageBox } from 'element-plus/es'
+import sysConfig from "@/config";
+import { Storage } from "./storage";
+import store from "@/store";
+
 
 // axios实例
-const service = axios.create({
-	baseURL: import.meta.env.VITE_API_URL as any,
-	timeout: 60000,
-	headers: { 'Content-Type': 'application/json;charset=UTF-8' }
-})
+const http = axios.create({
+	baseURL: sysConfig.API_URL as any,
+	timeout: sysConfig.TIMEOUT,
+	headers: { "Content-Type": "application/json;charset=UTF-8" },
+  });
+
+ 
 
 // 请求拦截器
-service.interceptors.request.use(
-	(config: any) => {
-		const userStore = useUserStore()
-
-		if (userStore?.token) {
-			config.headers.Authorization = userStore.token
-		}
-
-		config.headers['Accept-Language'] = cache.getLanguage()
-
-		// 追加时间戳，防止GET请求缓存
-		if (config.method?.toUpperCase() === 'GET') {
-			config.params = { ...config.params, t: new Date().getTime() }
-		}
-
-		if (Object.values(config.headers).includes('application/x-www-form-urlencoded')) {
-			config.data = qs.stringify(config.data)
-		}
-
-		return config
+http.interceptors.request.use(
+	(config: InternalAxiosRequestConfig) => {
+	  const userStore = store.userStore;
+	  if (userStore?.token) {
+		config.headers.Authorization = userStore.token;
+	  }
+  
+	  config.headers["Accept-Language"] =
+		Storage.getItem("APP_LANG") || sysConfig.LANG;
+  
+	  // 追加时间戳，防止GET请求缓存
+	  if (config.method?.toUpperCase() === "GET") {
+		config.params = { ...config.params, t: new Date().getTime() };
+	  }
+  
+	  if (
+		Object.values(config.headers).includes(
+		  "application/x-www-form-urlencoded"
+		)
+	  ) {
+		config.data = qs.stringify(config.data);
+	  }
+  
+	  return config;
 	},
-	error => {
-		return Promise.reject(error)
+	(error: AxiosError) => {
+	  return Promise.reject(error);
 	}
-)
+  )
 
 // 是否刷新
 let isRefreshToken = false
@@ -46,11 +56,11 @@ let requests: any[] = []
 
 // 刷新token
 const getRefreshToken = (refreshToken: string) => {
-	return service.post('/sys/auth/token?refreshToken=' + refreshToken)
+	return http.post('/sys/auth/token?refreshToken=' + refreshToken)
 }
 
 // 响应拦截器
-service.interceptors.response.use(
+http.interceptors.response.use(
 	async (response: AxiosResponse<any>) => {
 		const userStore = useUserStore()
 
@@ -94,7 +104,7 @@ service.interceptors.response.use(
 						cb()
 					})
 					requests = []
-					return service(config)
+					return http(config)
 				} catch (e) {
 					// 刷新失败
 					requests.forEach((cb: any) => {
@@ -110,7 +120,7 @@ service.interceptors.response.use(
 				return new Promise(resolve => {
 					requests.push(() => {
 						config.headers!.Authorization = userStore.token
-						resolve(service(config))
+						resolve(http(config))
 					})
 				})
 			}
@@ -146,4 +156,4 @@ const handleAuthorized = () => {
 }
 
 // 导出 axios 实例
-export default service
+export default http

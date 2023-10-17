@@ -1,19 +1,19 @@
-import service from '@/utils/request'
+import http from '@/utils/request'
 
 export const useCaptchaEnabledApi = () => {
-	return service.get('/sys/auth/captcha/enabled')
+	return http.get('/sys/auth/captcha/enabled')
 }
 
 export const useCaptchaApi = () => {
-	return service.get('/sys/auth/captcha')
+	return http.get('/sys/auth/captcha')
 }
 
 export const useSendCodeApi = (mobile: string) => {
-	return service.post('/sys/auth/send/code?mobile=' + mobile)
+	return http.post('/sys/auth/send/code?mobile=' + mobile)
 }
 
 export const useAccountLoginApi = (data: any) => {
-	return service.post('/sys/auth/login', data)
+	return http.post('/v1/user/login', data)
 }
 
 export const useMobileLoginApi = (data: any) => {
